@@ -1,5 +1,11 @@
 # An EventEmitter for Go
 
+## Install
+
+With `go get`:
+
+    % go get github.com/CHH/eventemitter
+
 ## Usage
 
 A new EventEmitter is created by the `NewEventEmitter` function.
