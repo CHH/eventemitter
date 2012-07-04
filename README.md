@@ -80,3 +80,8 @@ func NewServer() *Server {
 }
 ```
 
+## License
+
+EventEmitter is distributed under the Terms of the MIT License. See
+the bundled file `LICENSE.txt` for more information.
+
