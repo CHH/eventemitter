@@ -36,14 +36,13 @@ func (self *EventEmitter) Init() {
 	self.Events = make(map[string][]EventListener)
 }
 
-func (self *EventEmitter) RemoveListeners(event string) {
-	delete(self.Events, event)
+func (self *EventEmitter) On(event string, listener EventListener) {
+    self.AddListener(event, listener)
 }
 
-func (self *EventEmitter) On(event string, listener EventListener) {
+func (self *EventEmitter) AddListener(event string, listener EventListener) {
 	// Check if the event exists, otherwise initialize the list
 	// of handlers for this event.
-
 	if _, exists := self.Events[event]; !exists {
 		self.Events[event] = []EventListener{listener}
 	} else {
@@ -51,7 +50,13 @@ func (self *EventEmitter) On(event string, listener EventListener) {
 	}
 }
 
-func (self *EventEmitter) Emit(event string, argv ...interface{}) chan *Event {
+func (self *EventEmitter) RemoveListeners(event string) {
+	delete(self.Events, event)
+}
+
+// TODO: Return "false" as second argument when no listeners
+// where registered to enable the "Comma OK" idiom.
+func (self *EventEmitter) Emit(event string, argv ...interface{}) (chan *Event) {
 	listeners, exists := self.Events[event]
 
 	if !exists {
