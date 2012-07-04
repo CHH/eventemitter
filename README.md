@@ -37,10 +37,16 @@ When `Emit` is called, each registered listener is called in
 its own Goroutine. They all share a common channel, which is
 returned by the `Emit` function.
 
-This channel can be used to trigger events synchronously:
+```go
+var c chan *Event
+
+c = emitter.Emit("foo")
+```
+
+This channel can be used to wait until all listeners have finished, by using the
+`<-` operator without variable:
 
 ```go
-// Waits until all events have finished
 <- emitter.Emit("foo")
 ```
 
