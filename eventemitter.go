@@ -1,21 +1,20 @@
-
 package eventemitter
 
-import(
-    "fmt"
+import (
+	"fmt"
 )
 
 type Event struct {
-	Name	string
-	Argv	[]interface{}
-    Result  interface{}
+	Name   string
+	Argv   []interface{}
+	Result interface{}
 }
 
 type EventListener func(event *Event)
 
 type EventError struct {
 	EventName string
-	Message string
+	Message   string
 }
 
 func (self EventError) Error() string {
@@ -27,14 +26,14 @@ type EventEmitter struct {
 }
 
 func NewEventEmitter() *EventEmitter {
-    e := new(EventEmitter)
-    e.Init()
+	e := new(EventEmitter)
+	e.Init()
 
-    return e
+	return e
 }
 
 func (self *EventEmitter) Init() {
-    self.Events = make(map[string][]EventListener)
+	self.Events = make(map[string][]EventListener)
 }
 
 func (self *EventEmitter) RemoveListeners(event string) {
@@ -48,11 +47,11 @@ func (self *EventEmitter) On(event string, listener EventListener) {
 	if _, exists := self.Events[event]; !exists {
 		self.Events[event] = []EventListener{listener}
 	} else {
-        self.Events[event] = append(self.Events[event], listener)
-    }
+		self.Events[event] = append(self.Events[event], listener)
+	}
 }
 
-func (self *EventEmitter) Emit(event string, argv ...interface{}) (chan *Event) {
+func (self *EventEmitter) Emit(event string, argv ...interface{}) chan *Event {
 	listeners, exists := self.Events[event]
 
 	if !exists {
@@ -63,7 +62,7 @@ func (self *EventEmitter) Emit(event string, argv ...interface{}) (chan *Event) 
 
 	for _, listener := range listeners {
 		go func() {
-            e := &Event{Name: event, Argv: argv}
+			e := &Event{Name: event, Argv: argv}
 			listener(e)
 			c <- e
 		}()
@@ -71,4 +70,3 @@ func (self *EventEmitter) Emit(event string, argv ...interface{}) (chan *Event) 
 
 	return c
 }
-
