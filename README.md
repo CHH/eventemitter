@@ -77,6 +77,11 @@ func NewServer() *Server {
 
     // Allocates the EventEmitter's memory.
     s.EventEmitter.Init()
+
+    // All functions of the EventEmitter are available:
+    s.On("foo", func(event *ee.Event) {
+        
+    })
 }
 ```
 
