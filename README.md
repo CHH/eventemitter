@@ -1,4 +1,4 @@
-# go-ee, an EventEmitter for Go
+# An EventEmitter for Go
 
 ## Usage
 
@@ -24,4 +24,35 @@ An event can be triggered by calling the `Emit` method:
 When `Emit` is called, each registered listener is called in
 its own Goroutine. They all share a common channel, which is
 returned by the `Emit` function.
+
+This channel can be used to trigger events synchronously:
+
+    // Waits until all events have finished
+    <- emitter.Emit("foo")
+
+Each listener sends an `*Event` out on the channel when he's finished.
+This can be used to run some code everytime a listener has returned:
+
+    c := emitter.Emit("foo")
+
+    for event := <- c {
+        // Do something
+    }
+
+### Embedding
+
+EventEmitters can also be embedded in other types. When embedding you've
+to call the `Init` function on the EventEmitter, so the memory is
+correctly allocated:
+
+    type Server struct {
+        ee.EventEmitter
+    }
+
+    func NewServer() *Server {
+        s := new(Server)
+
+        // Allocates the EventEmitter's memory.
+        s.EventEmitter.Init()
+    }
 
