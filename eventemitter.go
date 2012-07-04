@@ -1,9 +1,5 @@
 package eventemitter
 
-import (
-	"fmt"
-)
-
 type Event struct {
 	Name   string
 	Argv   []interface{}
