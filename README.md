@@ -8,6 +8,8 @@ With `go get`:
 
 ## Usage
 
+_For more information please also see the [Package Docs](http://go.pkgdoc.org/github.com/CHH/eventemitter)._
+
 A new EventEmitter is created by the `NewEventEmitter` function.
 
 ```go
