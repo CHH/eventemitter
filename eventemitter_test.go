@@ -16,26 +16,46 @@ func TestEmbedding(t *testing.T) {
 	// used as sub type.
 	s.EventEmitter.Init()
 
-	s.On("recv", func(event *Event) {
-		event.Result = "bar"
+	s.On("recv", func(msg string) string {
+		return msg
 	})
 
-	e := <-s.Emit("recv")
+	ret := <-s.Emit("recv", "Hello World")
 
-	if res := e.Result.(string); res != "bar" {
-		t.Errorf("Expected %s, got %s", "bar", res)
+	expected := "Hello World"
+
+	if res := ret[0].(string); res != expected {
+		t.Errorf("Expected %s, got %s", expected, res)
 	}
 }
 
 func TestEmitReturnsChan(t *testing.T) {
 	emitter := NewEventEmitter()
 
-	emitter.On("foo", func(event *Event) {
+	emitter.On("hello", func(name string) string {
+		return "Hello World " + name
 	})
 
-	e := <-emitter.Emit("foo")
+	ret := <-emitter.Emit("hello", "John")
+	expected := "Hello World John"
 
-	if e.Name != "foo" {
-		t.Errorf("Expected event name %s, got %s", "foo", e.Name)
+	if (ret[0].(string) != expected) {
+		t.Errorf("Expected %s, but got %q", expected, ret)
+	}
+}
+
+func BenchmarkEmit(b *testing.B) {
+	b.StopTimer()
+	emitter := NewEventEmitter()
+
+	for i := 0; i < 100; i++ {
+		emitter.On("hello", func(name string) string {
+			return "Hello World " + name
+		})
+	}
+	b.StartTimer()
+
+	for i := 0; i < b.N; i++ {
+		<- emitter.Emit("hello", "John")
 	}
 }

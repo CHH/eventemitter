@@ -24,15 +24,15 @@ A listener is of type `func (event *ee.Event)`
 Listeners can be bound to event names with the `On` method:
 
 ```go
-emitter.On("foo", func(event *ee.Event) {
-    fmt.Printf("Received event '%s'.", event.Name)
+emitter.On("foo", func(name string) {
+    fmt.Printf("Hello World %s", name)
 })
 ```
 
 An event can be triggered by calling the `Emit` method:
 
 ```go
-<- emitter.Emit("foo")
+<- emitter.Emit("foo", "John")
 ```
 
 When `Emit` is called, each registered listener is called in
@@ -40,25 +40,24 @@ its own Goroutine. They all share a common channel, which is
 returned by the `Emit` function.
 
 ```go
-var c chan *Event
+var c chan interface{} 
 
-c = emitter.Emit("foo")
+c = emitter.Emit("foo", "John")
 ```
 
 This channel can be used to wait until all listeners have finished, by using the
 `<-` operator without variable:
 
 ```go
-<- emitter.Emit("foo")
+<- emitter.Emit("foo", "John")
 ```
 
-Each listener sends an `*Event` out on the channel when he's finished.
-This can be used to run some code everytime a listener has returned:
+Each listener sends back its return value on the channel:
 
 ```go
-c := emitter.Emit("foo")
+c := emitter.Emit("foo", "John")
 
-for event := <- c {
+for ret := <- c {
     // Do something
 }
 ```
@@ -81,7 +80,7 @@ func NewServer() *Server {
     s.EventEmitter.Init()
 
     // All functions of the EventEmitter are available:
-    s.On("foo", func(event *ee.Event) {
+    s.On("foo", func() {
         
     })
 }
