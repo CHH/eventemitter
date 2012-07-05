@@ -22,3 +22,15 @@ func ExampleEventEmitter() {
 	// Hello World
 	// Hello Hello World
 }
+
+func ExampleEventEmitterEmit() {
+	emitter := NewEventEmitter()
+
+	emitter.On("hello", func(event *Event) {
+		fmt.Printf("Hello World %s\n", event.Argv[0].(string))
+	})
+
+	<-emitter.Emit("hello", "John")
+	// Output:
+	// Hello World John
+}
