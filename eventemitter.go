@@ -73,7 +73,7 @@ func (self *EventEmitter) Emit(event string, argv ...interface{}) <-chan []inter
 	for _, listener := range listeners {
 		go func() {
 			retVals := listener.Call(callArgv)
-			response := []interface{}{}
+			var response []interface{}
 
 			for _, r := range retVals {
 				response = append(response, r.Interface())
