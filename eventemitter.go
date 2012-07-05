@@ -59,11 +59,11 @@ func (self *EventEmitter) Emit(event string, argv ...interface{}) chan *Event {
 	c := make(chan *Event)
 
 	for _, listener := range listeners {
-		go func() {
+		go func(l EventListener) {
 			e := &Event{Name: event, Argv: argv}
-			listener(e)
+			l(e)
 			c <- e
-		}()
+		}(listener)
 	}
 
 	return c
