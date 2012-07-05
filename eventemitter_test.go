@@ -1,8 +1,8 @@
 package eventemitter
 
 import (
-	"testing"
 	"fmt"
+	"testing"
 )
 
 // Struct for testing Embedding of EventEmitters
@@ -53,7 +53,7 @@ func BenchmarkEmit(b *testing.B) {
 	b.StartTimer()
 
 	for i := 0; i < b.N; i++ {
-		<- emitter.Emit("hello", "John")
+		<-emitter.Emit("hello", "John")
 	}
 }
 
@@ -70,7 +70,7 @@ func ExampleEmit() {
 	})
 
 	// Wait until all handlers have finished
-	<- emitter.Emit("hello")
+	<-emitter.Emit("hello")
 	// Output:
 	// Hello World
 	// Hello Hello World
