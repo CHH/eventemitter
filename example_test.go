@@ -23,7 +23,7 @@ func ExampleEventEmitter() {
 	// Hello Hello World
 }
 
-func ExampleEmit() {
+func ExampleEventEmitter_Emit() {
 	emitter := NewEventEmitter()
 
 	emitter.On("hello", func(event *Event) {
