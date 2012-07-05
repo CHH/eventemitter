@@ -49,7 +49,7 @@ func (self *EventEmitter) RemoveListeners(event string) {
 // Emits the given event. Puts all arguments following the event name
 // into the Event's `Argv` member. Returns a channel if listeners were
 // called, nil otherwise.
-func (self *EventEmitter) Emit(event string, argv ...interface{}) chan *Event {
+func (self *EventEmitter) Emit(event string, argv ...interface{}) <-chan *Event {
 	listeners, exists := self.Events[event]
 
 	if !exists {
