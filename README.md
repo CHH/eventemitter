@@ -1,5 +1,7 @@
 # An EventEmitter for Go
 
+**Build Status:** ![Build Status by goci.me](http://goci.me/project/image/github.com/CHH/eventemitter)
+
 ## Install
 
 With `go get`:
