@@ -13,4 +13,9 @@ func NewServer() *Server {
 }
 
 func ExampleEventEmitter_Init() {
+	s := NewServer()
+
+	// Do something
+
+	s.Emit("connect"/*, conn */)
 }
