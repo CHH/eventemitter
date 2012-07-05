@@ -39,7 +39,7 @@ func TestEmitReturnsChan(t *testing.T) {
 	ret := <-emitter.Emit("hello", "John")
 	expected := "Hello World John"
 
-	if (ret[0].(string) != expected) {
+	if ret[0].(string) != expected {
 		t.Errorf("Expected %s, but got %q", expected, ret)
 	}
 }
@@ -56,6 +56,6 @@ func BenchmarkEmit(b *testing.B) {
 	b.StartTimer()
 
 	for i := 0; i < b.N; i++ {
-		<- emitter.Emit("hello", "John")
+		<-emitter.Emit("hello", "John")
 	}
 }

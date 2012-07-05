@@ -1,6 +1,6 @@
 package eventemitter
 
-import(
+import (
 	"reflect"
 )
 
@@ -39,7 +39,7 @@ func (self *EventEmitter) AddListener(event string, listener interface{}) {
 	if _, exists := self.Events[event]; !exists {
 		self.Events[event] = []reflect.Value{}
 	}
-	
+
 	if l, ok := listener.(reflect.Value); ok {
 		self.Events[event] = append(self.Events[event], l)
 	} else {
@@ -56,7 +56,7 @@ func (self *EventEmitter) RemoveListeners(event string) {
 // Emits the given event. Puts all arguments following the event name
 // into the Event's `Argv` member. Returns a channel if listeners were
 // called, nil otherwise.
-func (self *EventEmitter) Emit(event string, argv ...interface{}) <- chan []interface{} {
+func (self *EventEmitter) Emit(event string, argv ...interface{}) <-chan []interface{} {
 	listeners, exists := self.Events[event]
 
 	if !exists {
@@ -73,7 +73,6 @@ func (self *EventEmitter) Emit(event string, argv ...interface{}) <- chan []inte
 	for _, listener := range listeners {
 		go func() {
 			retVals := listener.Call(callArgv)
-
 			response := []interface{}{}
 
 			for _, r := range retVals {
@@ -86,4 +85,3 @@ func (self *EventEmitter) Emit(event string, argv ...interface{}) <- chan []inte
 
 	return c
 }
-
