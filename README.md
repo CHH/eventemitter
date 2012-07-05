@@ -52,7 +52,7 @@ This channel can be used to wait until all listeners have finished, by using the
 <- emitter.Emit("foo", "John")
 ```
 
-Each listener sends back its return value on the channel:
+Each listener yields a slice of its return values on the channel:
 
 ```go
 c := emitter.Emit("foo", "John")
