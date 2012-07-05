@@ -39,3 +39,19 @@ func TestEmitReturnsChan(t *testing.T) {
 		t.Errorf("Expected event name %s, got %s", "foo", e.Name)
 	}
 }
+
+func BenchmarkEmit(b *testing.B) {
+	b.StopTimer()
+	emitter := NewEventEmitter()
+
+	for i := 0; i < 100; i++ {
+		emitter.On("hello", func(event *Event) {
+			event.Result = "Hello World " + event.Argv[0].(string)
+		})
+	}
+	b.StartTimer()
+
+	for i := 0; i < b.N; i++ {
+		<- emitter.Emit("hello", "John")
+	}
+}
