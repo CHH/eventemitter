@@ -1,6 +1,6 @@
 package eventemitter
 
-import(
+import (
 	"fmt"
 )
 
