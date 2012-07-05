@@ -34,3 +34,4 @@ func ExampleEventEmitter_Emit() {
 	// Output:
 	// Hello World John
 }
+
