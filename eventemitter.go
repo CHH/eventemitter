@@ -9,7 +9,7 @@ type Event struct {
 type EventListener func(event *Event)
 
 type EventEmitter struct {
-	Events map[string][]EventListener
+	events map[string][]EventListener
 }
 
 func NewEventEmitter() *EventEmitter {
@@ -22,7 +22,11 @@ func NewEventEmitter() *EventEmitter {
 // Allocates the EventEmitters memory. Has to be called when
 // embedding an EventEmitter in another Type.
 func (self *EventEmitter) Init() {
-	self.Events = make(map[string][]EventListener)
+	self.events = make(map[string][]EventListener)
+}
+
+func (self *EventEmitter) Listeners(event string) []EventListener {
+	return self.events[event]
 }
 
 // Alias to AddListener.
@@ -34,23 +38,23 @@ func (self *EventEmitter) On(event string, listener EventListener) {
 func (self *EventEmitter) AddListener(event string, listener EventListener) {
 	// Check if the event exists, otherwise initialize the list
 	// of handlers for this event.
-	if _, exists := self.Events[event]; !exists {
-		self.Events[event] = []EventListener{listener}
+	if _, exists := self.events[event]; !exists {
+		self.events[event] = []EventListener{listener}
 	} else {
-		self.Events[event] = append(self.Events[event], listener)
+		self.events[event] = append(self.events[event], listener)
 	}
 }
 
 // Removes all listeners from the given event.
 func (self *EventEmitter) RemoveListeners(event string) {
-	delete(self.Events, event)
+	delete(self.events, event)
 }
 
 // Emits the given event. Puts all arguments following the event name
 // into the Event's `Argv` member. Returns a channel if listeners were
 // called, nil otherwise.
 func (self *EventEmitter) Emit(event string, argv ...interface{}) <-chan *Event {
-	listeners, exists := self.Events[event]
+	listeners, exists := self.events[event]
 
 	if !exists {
 		return nil
