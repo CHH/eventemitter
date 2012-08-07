@@ -5,7 +5,10 @@ import (
 )
 
 type Response struct {
+	// Name of the Event
 	EventName string
+
+	// Slice of all the handler's return values
 	Ret []interface{}
 }
 
