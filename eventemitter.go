@@ -4,14 +4,13 @@ import (
 	"reflect"
 )
 
-type Event struct {
-	Name   string
-	Argv   []interface{}
-	Result interface{}
+type Response struct {
+	EventName string
+	Ret []interface{}
 }
 
 type EventEmitter struct {
-	Events map[string][]reflect.Value
+	events map[string][]reflect.Value
 }
 
 func NewEventEmitter() *EventEmitter {
@@ -24,7 +23,11 @@ func NewEventEmitter() *EventEmitter {
 // Allocates the EventEmitters memory. Has to be called when
 // embedding an EventEmitter in another Type.
 func (self *EventEmitter) Init() {
-	self.Events = make(map[string][]reflect.Value)
+	self.events = make(map[string][]reflect.Value)
+}
+
+func (self *EventEmitter) Listeners(event string) []reflect.Value {
+	return self.events[event]
 }
 
 // Alias to AddListener.
@@ -36,51 +39,51 @@ func (self *EventEmitter) On(event string, listener interface{}) {
 func (self *EventEmitter) AddListener(event string, listener interface{}) {
 	// Check if the event exists, otherwise initialize the list
 	// of handlers for this event.
-	if _, exists := self.Events[event]; !exists {
-		self.Events[event] = []reflect.Value{}
+	if _, exists := self.events[event]; !exists {
+		self.events[event] = []reflect.Value{}
 	}
 
 	if l, ok := listener.(reflect.Value); ok {
-		self.Events[event] = append(self.Events[event], l)
+		self.events[event] = append(self.events[event], l)
 	} else {
 		l := reflect.ValueOf(listener)
-		self.Events[event] = append(self.Events[event], l)
+		self.events[event] = append(self.events[event], l)
 	}
 }
 
 // Removes all listeners from the given event.
 func (self *EventEmitter) RemoveListeners(event string) {
-	delete(self.Events, event)
+	delete(self.events, event)
 }
 
 // Emits the given event. Puts all arguments following the event name
 // into the Event's `Argv` member. Returns a channel if listeners were
 // called, nil otherwise.
-func (self *EventEmitter) Emit(event string, argv ...interface{}) <-chan []interface{} {
-	listeners, exists := self.Events[event]
+func (self *EventEmitter) Emit(event string, argv ...interface{}) <-chan *Response {
+	listeners, exists := self.events[event]
 
 	if !exists {
 		return nil
 	}
 
 	var callArgv []reflect.Value
-	c := make(chan []interface{})
+	c := make(chan *Response)
 
 	for _, a := range argv {
 		callArgv = append(callArgv, reflect.ValueOf(a))
 	}
 
 	for _, listener := range listeners {
-		go func() {
+		go func(listener reflect.Value) {
 			retVals := listener.Call(callArgv)
-			var response []interface{}
+			var ret []interface{}
 
 			for _, r := range retVals {
-				response = append(response, r.Interface())
+				ret = append(ret, r.Interface())
 			}
 
-			c <- response
-		}()
+			c <- &Response{EventName: event, Ret: ret}
+		}(listener)
 	}
 
 	return c

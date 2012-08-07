@@ -1,6 +1,7 @@
 package eventemitter
 
 import (
+	"fmt"
 	"testing"
 )
 
@@ -20,35 +21,35 @@ func TestEmbedding(t *testing.T) {
 		return msg
 	})
 
-	ret := <-s.Emit("recv", "Hello World")
+	resp := <-s.Emit("recv", "Hello World")
 
 	expected := "Hello World"
 
-	if res := ret[0].(string); res != expected {
+	if res := resp.Ret[0].(string); res != expected {
 		t.Errorf("Expected %s, got %s", expected, res)
 	}
 }
 
-func TestEmitReturnsChan(t *testing.T) {
+func ExampleEmitReturnsEventOnChan() {
 	emitter := NewEventEmitter()
 
 	emitter.On("hello", func(name string) string {
 		return "Hello World " + name
 	})
 
-	ret := <-emitter.Emit("hello", "John")
-	expected := "Hello World John"
+	e := <-emitter.Emit("hello", "John")
 
-	if ret[0].(string) != expected {
-		t.Errorf("Expected %s, but got %q", expected, ret)
-	}
+	fmt.Println(e.EventName)
+	// Output:
+	// hello
 }
 
 func BenchmarkEmit(b *testing.B) {
 	b.StopTimer()
 	emitter := NewEventEmitter()
+	nListeners := 100
 
-	for i := 0; i < 100; i++ {
+	for i := 0; i < nListeners; i++ {
 		emitter.On("hello", func(name string) string {
 			return "Hello World " + name
 		})
