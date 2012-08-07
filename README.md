@@ -12,13 +12,13 @@ With `go get`:
 
 _For more information please also see the [Package Docs](http://go.pkgdoc.org/github.com/CHH/eventemitter)._
 
-A new EventEmitter is created by the `NewEventEmitter` function.
+A new EventEmitter is created by the `New` function.
 
 ```go
-import ee "github.com/CHH/eventemitter"
+import "github.com/CHH/eventemitter"
 
 func main() {
-    emitter := ee.NewEventEmitter()
+    emitter := eventemitter.New()
 }
 ```
 
@@ -54,12 +54,13 @@ This channel can be used to wait until all listeners have finished, by using the
 <- emitter.Emit("foo", "John")
 ```
 
-Each listener yields a slice of its return values on the channel:
+Each listener yields a reference to `eventemitter.Response` on the
+channel once it has finished:
 
 ```go
 c := emitter.Emit("foo", "John")
 
-for ret := <- c {
+for resp := <- c {
     // Do something
 }
 ```
@@ -72,7 +73,7 @@ correctly allocated:
 
 ```go
 type Server struct {
-    ee.EventEmitter
+    eventemitter.EventEmitter
 }
 
 func NewServer() *Server {

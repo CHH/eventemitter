@@ -13,7 +13,7 @@ type EventEmitter struct {
 	events map[string][]reflect.Value
 }
 
-func NewEventEmitter() *EventEmitter {
+func New() *EventEmitter {
 	e := new(EventEmitter)
 	e.Init()
 

@@ -31,7 +31,7 @@ func TestEmbedding(t *testing.T) {
 }
 
 func ExampleEmitReturnsEventOnChan() {
-	emitter := NewEventEmitter()
+	emitter := New()
 
 	emitter.On("hello", func(name string) string {
 		return "Hello World " + name
@@ -46,7 +46,7 @@ func ExampleEmitReturnsEventOnChan() {
 
 func BenchmarkEmit(b *testing.B) {
 	b.StopTimer()
-	emitter := NewEventEmitter()
+	emitter := New()
 	nListeners := 100
 
 	for i := 0; i < nListeners; i++ {

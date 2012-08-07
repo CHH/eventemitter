@@ -6,7 +6,7 @@ import (
 
 func ExampleEventEmitter() {
 	// Construct a new EventEmitter instance
-	emitter := NewEventEmitter()
+	emitter := New()
 
 	emitter.On("hello", func() {
 		fmt.Println("Hello World")
@@ -24,7 +24,7 @@ func ExampleEventEmitter() {
 }
 
 func ExampleEventEmitter_Emit() {
-	emitter := NewEventEmitter()
+	emitter := New()
 
 	emitter.On("hello", func(name string) {
 		fmt.Printf("Hello World %s\n", name)
